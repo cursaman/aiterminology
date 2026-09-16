@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Header(){return <header><nav className="nav"><Link className="brand" href="/">AX START</Link><Link href="/terms">학습하기</Link><Link href="/project">프로젝트</Link><Link href="/my-progress">나의 학습</Link></nav></header>}

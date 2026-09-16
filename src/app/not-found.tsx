@@ -1,0 +1,1 @@
+import Link from "next/link";export default function NotFound(){return <div className="card"><h1>🤔 길을 잃으셨네요.</h1><p>요청한 페이지를 찾을 수 없습니다.</p><Link className="btn" href="/">홈으로</Link></div>}
