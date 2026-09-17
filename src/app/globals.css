@@ -183,6 +183,11 @@ h2{line-height:1.25}
 .example-project-summary h3 .project-icon{width:40px;height:40px;border-radius:12px}
 
 /* Harmonized learning surfaces */
+.lesson,
+.terms-lesson{
+  width:100%;
+  max-width:1200px;
+}
 .project-example{border-color:#dbe4ff;background:linear-gradient(140deg,#f8faff,#f5fbfa)}
 .project-example-heading>span{background:var(--brand)}
 .example-project-label,.example-part-label,.example-project-summary dt{color:var(--brand)}
