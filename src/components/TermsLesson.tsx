@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {useEffect, useState} from "react";
+import ProjectExample from "@/components/ProjectExample";
 import {aiTerms, termCategories, type TermCategory} from "@/data/aiTerms";
 import {termQuizQuestions, type QuizQuestion} from "@/data/termQuiz";
 import {KEYS, getJSON, setJSON} from "@/lib/storage";
@@ -127,6 +128,8 @@ export default function TermsLesson() {
           <li><b>예시</b>로 실제 사용 장면을 떠올립니다.</li>
         </ol>
       </section>
+
+      <ProjectExample slug="terms" />
 
       <section aria-labelledby="term-list-title">
         <div className="section-heading">
