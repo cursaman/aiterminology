@@ -5,7 +5,7 @@ type I={answers:Record<string,string>;complete:boolean};
 const names=["PROJECT.md","PRD.md","AGENTS.md","QA_CHECKLIST.md"] as const;
 export default function Documents(){const [p,setP]=useState<P|null>(null);const [iv,setIv]=useState<I|null>(null);const [tab,setTab]=useState(0);const [docs,setDocs]=useState<Record<string,string>>({});
  useEffect(()=>{setP(getJSON<P|null>(KEYS.project,null));setIv(getJSON<I|null>(KEYS.interview,null));setDocs(getJSON<Record<string,string>>(KEYS.documents,{}))},[]);
- const generated=useMemo<Record<string,string>>(()=>{if(!p||!iv)return {};const a=iv.answers;return {
+ const generated=useMemo(():Record<string,string>=>{if(!p||!iv)return {};const a=iv.answers;return {
 "PROJECT.md":`# ${p.projectName}\n\n## 목적\n${p.purpose}\n\n## 사용자\n${p.targetUser}\n\n## 해결 문제\n${a.intent||""}\n\n## 핵심 기능\n${p.features.map(x=>"- "+x).join("\n")}\n\n## 기술\n${p.stack.map(x=>"- "+x).join("\n")}\n\n## 완료 목표\n${a.success||""}`,
 "PRD.md":`# PRD\n\n## Product Goal\n${a.outcome||""}\n\n## Core Feature\n${a.core||""}\n\n## MVP / In Scope\n${a.scope||p.features.join(", ")}\n\n## Out of Scope\n${a.exclude||""}\n\n## Constraints\n${a.rules||""}\n\n## Technical Stack\n${p.stack.map(x=>"- "+x).join("\n")}`,
 "AGENTS.md":`# AGENTS.md\n\n## Objective\nPROJECT.md와 PRD.md에 정의된 MVP를 구현한다.\n\n## Rules\n- 기존 정상 기능을 임의로 삭제하지 않는다.\n- PRD 범위를 벗어난 기능을 임의로 추가하지 않는다.\n- TypeScript 오류를 남기지 않는다.\n- 비밀키를 코드에 직접 작성하지 않는다.\n- 기존 구조를 먼저 확인한다.\n- 작은 단위로 구현하고 매 단계 검증한다.\n\n## Project Constraints\n${a.rules||""}\n\n## Completion\nQA_CHECKLIST.md의 필수 기준을 통과해야 완료한다.`,
