@@ -11,6 +11,7 @@ export default function Documents(){const [p,setP]=useState<P|null>(null);const 
 "AGENTS.md":`# AGENTS.md\n\n## Objective\nPROJECT.md와 PRD.md에 정의된 MVP를 구현한다.\n\n## Rules\n- 기존 정상 기능을 임의로 삭제하지 않는다.\n- PRD 범위를 벗어난 기능을 임의로 추가하지 않는다.\n- TypeScript 오류를 남기지 않는다.\n- 비밀키를 코드에 직접 작성하지 않는다.\n- 기존 구조를 먼저 확인한다.\n- 작은 단위로 구현하고 매 단계 검증한다.\n\n## Project Constraints\n${a.rules||""}\n\n## Completion\nQA_CHECKLIST.md의 필수 기준을 통과해야 완료한다.`,
 "QA_CHECKLIST.md":`# QA CHECKLIST\n\n## Functional\n${(a.success||p.features.join(",")).split(",").map(x=>"- [ ] "+x.trim()).join("\n")}\n\n## Technical\n- [ ] npm run build 성공\n- [ ] TypeScript Error 0\n- [ ] 모바일 정상\n- [ ] 깨진 링크 없음\n- [ ] 주요 Console 오류 없음\n\n## Additional\n${a.technical||""}`
 }},[p,iv]);
+ useEffect(()=>{if(p&&iv?.complete){setJSON(KEYS.documents,{...generated,...docs})}},[p,iv,generated,docs]);
  const merged:Record<string,string>={...generated,...docs}; if(!p||!iv?.complete)return <div className="card"><h1>개발 문서를 만들 준비가 되지 않았습니다.</h1><p>프로젝트 선택과 Deep Interview를 먼저 완료해주세요.</p><Link className="btn" href="/project">프로젝트 시작</Link></div>;
  const name=names[tab], text=merged[name]||"";const update=(v:string)=>{const n:Record<string,string>={...merged,[name]:v};setDocs(n);setJSON(KEYS.documents,n)};
  const download=()=>{const blob=new Blob([text],{type:"text/markdown;charset=utf-8"});const u=URL.createObjectURL(blob);const a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)};
