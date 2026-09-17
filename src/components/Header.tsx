@@ -1,2 +1,36 @@
 import Link from "next/link";
-export default function Header(){return <header><nav className="nav"><Link className="brand" href="/">AX START</Link><Link href="/terms">학습하기</Link><Link href="/project">프로젝트</Link><Link href="/my-progress">나의 학습</Link></nav></header>}
+
+const navigation = [
+  { href: "/terms", label: "학습하기" },
+  { href: "/project", label: "프로젝트" },
+  { href: "/my-progress", label: "나의 학습" },
+];
+
+export default function Header() {
+  return (
+    <header>
+      <nav className="nav" aria-label="주요 메뉴">
+        <Link className="brand" href="/">
+          AX START
+        </Link>
+        <div className="desktop-nav">
+          {navigation.map((item) => (
+            <Link href={item.href} key={item.href}>
+              {item.label}
+            </Link>
+          ))}
+        </div>
+        <details className="mobile-nav">
+          <summary>메뉴</summary>
+          <div>
+            {navigation.map((item) => (
+              <Link href={item.href} key={item.href}>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </details>
+      </nav>
+    </header>
+  );
+}
