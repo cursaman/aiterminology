@@ -4,6 +4,8 @@ export type AiTerm = {
   id: string;
   name: string;
   koreanName: string;
+  fullName?: string;
+  pronunciation?: string;
   category: TermCategory;
   oneLine: string;
   analogy: string;
@@ -26,6 +28,8 @@ export const aiTerms: AiTerm[] = [
     id: "ai",
     name: "AI",
     koreanName: "인공지능",
+    fullName: "Artificial Intelligence",
+    pronunciation: "에이아이",
     category: "basic",
     oneLine: "사람이 하던 판단, 학습, 창작 같은 일을 컴퓨터가 하도록 만든 기술입니다.",
     analogy: "많은 문제를 보고 풀이 방법을 익힌 디지털 조수와 비슷합니다.",
@@ -46,6 +50,8 @@ export const aiTerms: AiTerm[] = [
     id: "llm",
     name: "LLM",
     koreanName: "대규모 언어 모델",
+    fullName: "Large Language Model",
+    pronunciation: "엘엘엠",
     category: "basic",
     oneLine: "아주 많은 글을 학습해 사람의 말을 이해하고 문장을 만드는 AI 모델입니다.",
     analogy: "수많은 책을 읽고 문장 이어 쓰기를 아주 잘하게 된 사람과 비슷합니다.",
@@ -126,11 +132,35 @@ export const aiTerms: AiTerm[] = [
     id: "rag",
     name: "RAG",
     koreanName: "검색 증강 생성",
+    fullName: "Retrieval-Augmented Generation",
+    pronunciation: "래그",
     category: "build",
     oneLine: "AI가 답하기 전에 관련 자료를 찾아보고 그 내용을 바탕으로 답하게 하는 방법입니다.",
     analogy: "기억에만 의존하지 않고 참고서를 펼쳐본 뒤 답하는 시험과 비슷합니다.",
     example: "회사 규정 문서를 검색해 최신 휴가 규정을 답하는 사내 챗봇",
     connectsTo: ["Embedding", "Context", "Hallucination"],
+  },
+  {
+    id: "vector-db",
+    name: "Vector DB",
+    koreanName: "벡터 데이터베이스",
+    pronunciation: "벡터 디비",
+    category: "build",
+    oneLine: "임베딩으로 바꾼 숫자를 저장하고 의미가 비슷한 자료를 빠르게 찾는 저장소입니다.",
+    analogy: "책 제목이 아니라 책의 주제와 분위기로 자료를 찾는 도서관과 비슷합니다.",
+    example: "사용자 질문과 의미가 가장 비슷한 회사 문서를 찾아 RAG에 전달하기",
+    connectsTo: ["Embedding", "RAG"],
+  },
+  {
+    id: "tool",
+    name: "Tool",
+    koreanName: "도구",
+    pronunciation: "툴",
+    category: "build",
+    oneLine: "AI가 검색, 계산, 파일 읽기처럼 대화만으로 할 수 없는 일을 수행하는 기능입니다.",
+    analogy: "업무 담당자가 계산기, 검색창, 문서 프로그램을 꺼내 쓰는 것과 비슷합니다.",
+    example: "AI 에이전트가 날씨 API를 사용해 오늘의 실제 기온 확인하기",
+    connectsTo: ["AI Agent", "API"],
   },
   {
     id: "agent",
@@ -146,6 +176,8 @@ export const aiTerms: AiTerm[] = [
     id: "api",
     name: "API",
     koreanName: "프로그램 연결 창구",
+    fullName: "Application Programming Interface",
+    pronunciation: "에이피아이",
     category: "build",
     oneLine: "서로 다른 프로그램이 정해진 방식으로 요청하고 결과를 주고받는 연결 창구입니다.",
     analogy: "손님의 주문을 주방에 전달하고 음식을 받아오는 식당 직원과 비슷합니다.",
