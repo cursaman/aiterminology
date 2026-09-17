@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { projects } from "@/data/projects";
 import { KEYS, clearProject, setJSON } from "@/lib/storage";
+import ProjectIcon from "@/components/ProjectIcon";
 
 export default function ProjectPage() {
   const router = useRouter();
@@ -58,7 +59,7 @@ export default function ProjectPage() {
 
   return (
     <>
-      <p className="eyebrow">BUILD · STEP 1</p>
+      <p className="eyebrow">프로젝트 만들기 · 1단계</p>
       <h1>나의 첫 AI 프로젝트</h1>
       <p className="lead">처음에는 문제 하나, 사용자 한 종류, 핵심 기능 세 개면 충분합니다.</p>
       <div className="grid project-grid">
@@ -72,7 +73,8 @@ export default function ProjectPage() {
               onClick={() => pick(project.id)}
             >
               <span className="project-card-status">{isSelected ? "선택됨" : "선택하기"}</span>
-              <h3>{project.icon} {project.title}</h3>
+              <ProjectIcon id={project.id} size={28} />
+              <h3>{project.title}</h3>
               <p>{project.description}</p>
               <span className="pill">{project.difficulty}</span>
             </button>
@@ -88,7 +90,8 @@ export default function ProjectPage() {
           aria-labelledby="project-form-title"
         >
           <p className="selection-notice">
-            {selectedProject.icon} <strong>{selectedProject.title}</strong>을 선택했습니다. 아래 정보를 확인해주세요.
+            <ProjectIcon id={selectedProject.id} size={20} />
+            <strong>{selectedProject.title}</strong>을 선택했습니다. 아래 정보를 확인해주세요.
           </p>
           <h2 id="project-form-title">기본 정보</h2>
           {selected === "custom" && (

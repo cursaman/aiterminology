@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {lessons} from "@/data/lessons";
 import {exampleProject, projectJourney, type JourneySlug} from "@/data/projectJourney";
+import ProjectIcon from "@/components/ProjectIcon";
 
 export default function ProjectExample({slug}: {slug: JourneySlug}) {
   const currentStep = projectJourney[slug];
@@ -9,16 +10,16 @@ export default function ProjectExample({slug}: {slug: JourneySlug}) {
     <section className="project-example" aria-labelledby={`project-example-${slug}`}>
       <div className="project-example-heading">
         <div>
-          <p className="eyebrow">ONE PROJECT · 7 STEPS</p>
+          <p className="eyebrow">하나의 프로젝트 · 7단계</p>
           <h2 id={`project-example-${slug}`}>하나의 프로젝트로 연결해 보기</h2>
         </div>
-        <span>STEP {currentStep.step}</span>
+        <span>{currentStep.step}단계</span>
       </div>
 
       <div className="example-project-summary">
         <div>
           <p className="example-project-label">예시 프로젝트</p>
-          <h3>🍽️ {exampleProject.name}</h3>
+          <h3><ProjectIcon id="food" size={26} /> {exampleProject.name}</h3>
           <p>{exampleProject.description}</p>
         </div>
         <dl>
@@ -69,4 +70,3 @@ export default function ProjectExample({slug}: {slug: JourneySlug}) {
     </section>
   );
 }
-

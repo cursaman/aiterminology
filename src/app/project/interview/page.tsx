@@ -87,7 +87,7 @@ export default function Interview() {
 
   return (
     <div className="interview-page">
-      <p className="eyebrow">BUILD · STEP 2</p>
+      <p className="eyebrow">프로젝트 만들기 · 2단계</p>
       <h1>프로젝트 심층 질문</h1>
       <p className="interview-subtitle">Deep Interview · {project.projectName}</p>
       <div

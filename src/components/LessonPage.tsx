@@ -27,7 +27,7 @@ export default function LessonPage({slug}: {slug: JourneySlug}) {
 
   return (
     <article className="lesson">
-      <p className="eyebrow">LEARN {lessonIndex + 1} / {lessons.length}</p>
+      <p className="eyebrow">학습 {lessonIndex + 1} / {lessons.length}</p>
       <h1>{lesson.title}</h1>
       <p className="lead">{content.intro}</p>
 
@@ -68,4 +68,3 @@ export default function LessonPage({slug}: {slug: JourneySlug}) {
     </article>
   );
 }
-

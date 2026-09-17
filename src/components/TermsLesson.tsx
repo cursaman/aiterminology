@@ -110,7 +110,7 @@ export default function TermsLesson() {
 
   return (
     <article className="terms-lesson">
-      <p className="eyebrow">LEARN 1 / 7</p>
+      <p className="eyebrow">학습 1 / 7</p>
       <h1>처음 만나는 AI 용어</h1>
       <p className="lead">
         어려운 정의를 외우지 않아도 됩니다. 쉬운 설명과 생활 속 비유로
@@ -134,7 +134,7 @@ export default function TermsLesson() {
       <section aria-labelledby="term-list-title">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">AI BEGINNER DICTIONARY</p>
+            <p className="eyebrow">초보자를 위한 AI 용어</p>
             <h2 id="term-list-title">꼭 알아야 할 용어</h2>
           </div>
           <p className="term-count">총 {aiTerms.length}개</p>
@@ -230,7 +230,7 @@ export default function TermsLesson() {
       </section>
 
       <section className="term-quiz" aria-labelledby="term-quiz-title">
-        <p className="eyebrow">LEARNING CHECK</p>
+        <p className="eyebrow">이해도 확인</p>
         <h2 id="term-quiz-title">7문제로 이해도 확인하기</h2>
         <p className="muted">
           15문제 은행에서 매번 새로운 7문제가 나옵니다. 6문제 이상 맞히면 학습 완료입니다.
@@ -317,4 +317,3 @@ export default function TermsLesson() {
     </article>
   );
 }
-

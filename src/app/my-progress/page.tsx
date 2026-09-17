@@ -34,12 +34,12 @@ export default function Progress() {
 
   return (
     <>
-      <p className="eyebrow">MY AX START</p>
+      <p className="eyebrow">나의 AX START</p>
       <h1>나의 학습</h1>
       <section className="card progress-card">
         <div className="progress-heading">
           <div>
-            <p className="eyebrow">LEARNING PROGRESS</p>
+            <p className="eyebrow">학습 진행 현황</p>
             <h2>학습 진행률 {percent}%</h2>
           </div>
           <strong>{done} / {lessons.length} 완료</strong>
