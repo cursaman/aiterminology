@@ -3,42 +3,44 @@
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import {aiTerms, termCategories, type TermCategory} from "@/data/aiTerms";
+import {termQuizQuestions, type QuizQuestion} from "@/data/termQuiz";
 import {KEYS, getJSON, setJSON} from "@/lib/storage";
 
 type CategoryFilter = "all" | TermCategory;
 
-const quizQuestions = [
-  {
-    question: "AI가 알려준 통계가 정확한지 확인하려면 어떻게 해야 할까요?",
-    options: ["AI의 답을 그대로 믿는다", "공식 자료와 출처를 직접 확인한다", "같은 질문을 한 번 더 한다"],
-    correctAnswer: "공식 자료와 출처를 직접 확인한다",
-    explanation: "AI는 사실이 아닌 내용을 그럴듯하게 말할 수 있으므로 중요한 정보는 출처를 확인해야 합니다.",
-  },
-  {
-    question: "RAG는 AI가 답하기 전에 무엇을 하게 만드는 방법일까요?",
-    options: ["관련 자료를 검색한다", "그림을 그린다", "모델을 새로 학습한다"],
-    correctAnswer: "관련 자료를 검색한다",
-    explanation: "RAG는 질문과 관련된 자료를 먼저 찾고, 그 내용을 답변에 활용합니다.",
-  },
-  {
-    question: "Prompt는 무엇일까요?",
-    options: ["AI에게 주는 질문이나 지시", "AI가 저장된 컴퓨터", "글을 숫자로 바꾸는 기술"],
-    correctAnswer: "AI에게 주는 질문이나 지시",
-    explanation: "Prompt는 AI에게 원하는 일과 조건을 전달하는 질문 또는 지시문입니다.",
-  },
-] as const;
+const QUIZ_SIZE = 7;
+const PASS_SCORE = 6;
+
+function shuffle<T>(items: readonly T[]): T[] {
+  const result = [...items];
+
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [result[index], result[randomIndex]] = [result[randomIndex], result[index]];
+  }
+
+  return result;
+}
+
+function createQuiz(): QuizQuestion[] {
+  return shuffle(termQuizQuestions)
+    .slice(0, QUIZ_SIZE)
+    .map((question) => ({...question, options: shuffle(question.options)}));
+}
 
 export default function TermsLesson() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [showAll, setShowAll] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
+  const [activeQuiz, setActiveQuiz] = useState<QuizQuestion[]>([]);
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizResult, setQuizResult] = useState<number | null>(null);
 
   useEffect(() => {
     const progress = getJSON<Record<string, boolean>>(KEYS.progress, {});
     setIsComplete(Boolean(progress.termsQuiz));
+    setActiveQuiz(createQuiz());
     setJSON(KEYS.last, "/terms");
   }, []);
 
@@ -61,31 +63,48 @@ export default function TermsLesson() {
   const visibleTerms = isIntroView && !showAll
     ? matchingTerms.slice(0, 5)
     : matchingTerms;
-  const allQuizQuestionsAnswered = Object.keys(quizAnswers).length === quizQuestions.length;
+  const allQuizQuestionsAnswered = activeQuiz.length === QUIZ_SIZE
+    && activeQuiz.every((question) => Boolean(quizAnswers[question.id]));
 
   function selectCategory(nextCategory: CategoryFilter) {
     setCategory(nextCategory);
     setShowAll(nextCategory !== "all");
   }
 
-  function selectQuizAnswer(questionIndex: number, answer: string) {
-    setQuizAnswers((current) => ({...current, [questionIndex]: answer}));
+  function selectQuizAnswer(questionId: string, answer: string) {
+    setQuizAnswers((current) => ({...current, [questionId]: answer}));
     setQuizResult(null);
   }
 
   function checkQuiz() {
     if (!allQuizQuestionsAnswered) return;
 
-    const score = quizQuestions.filter(
-      (question, index) => quizAnswers[index] === question.correctAnswer,
+    const score = activeQuiz.filter(
+      (question) => quizAnswers[question.id] === question.correctAnswer,
     ).length;
     setQuizResult(score);
 
-    if (score === quizQuestions.length) {
+    if (score >= PASS_SCORE) {
       const progress = getJSON<Record<string, boolean>>(KEYS.progress, {});
       setJSON(KEYS.progress, {...progress, terms: true, termsQuiz: true});
       setIsComplete(true);
     }
+  }
+
+  function startNewQuiz() {
+    setActiveQuiz(createQuiz());
+    setQuizAnswers({});
+    setQuizResult(null);
+  }
+
+  function reviewTerm(termId: string) {
+    setCategory("all");
+    setQuery("");
+    setShowAll(true);
+
+    window.setTimeout(() => {
+      document.getElementById(termId)?.scrollIntoView({behavior: "smooth", block: "center"});
+    }, 0);
   }
 
   return (
@@ -209,57 +228,82 @@ export default function TermsLesson() {
 
       <section className="term-quiz" aria-labelledby="term-quiz-title">
         <p className="eyebrow">LEARNING CHECK</p>
-        <h2 id="term-quiz-title">3문제로 이해도 확인하기</h2>
-        <p className="muted">모두 맞히면 AI 용어 학습이 완료됩니다.</p>
+        <h2 id="term-quiz-title">7문제로 이해도 확인하기</h2>
+        <p className="muted">
+          15문제 은행에서 매번 새로운 7문제가 나옵니다. 6문제 이상 맞히면 학습 완료입니다.
+        </p>
 
-        <div className="quiz-list">
-          {quizQuestions.map((quiz, questionIndex) => (
-            <fieldset className="quiz-question" key={quiz.question}>
-              <legend>{questionIndex + 1}. {quiz.question}</legend>
-              <div className="quiz-options">
-                {quiz.options.map((option) => (
-                  <label key={option}>
-                    <input
-                      type="radio"
-                      name={`quiz-${questionIndex}`}
-                      value={option}
-                      checked={quizAnswers[questionIndex] === option}
-                      onChange={() => selectQuizAnswer(questionIndex, option)}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
-              </div>
-              {quizResult !== null ? (
-                <p className={quizAnswers[questionIndex] === quiz.correctAnswer ? "quiz-correct" : "quiz-wrong"}>
-                  {quizAnswers[questionIndex] === quiz.correctAnswer
-                    ? `정답입니다. ${quiz.explanation}`
-                    : `다시 생각해보세요. ${quiz.explanation}`}
-                </p>
-              ) : null}
-            </fieldset>
-          ))}
+        {activeQuiz.length === QUIZ_SIZE ? (
+          <div className="quiz-list">
+            {activeQuiz.map((quiz, questionIndex) => {
+              const isCorrect = quizAnswers[quiz.id] === quiz.correctAnswer;
+
+              return (
+                <fieldset className="quiz-question" key={quiz.id}>
+                  <legend>{questionIndex + 1}. {quiz.question}</legend>
+                  <div className="quiz-options">
+                    {quiz.options.map((option) => (
+                      <label key={option}>
+                        <input
+                          type="radio"
+                          name={`quiz-${quiz.id}`}
+                          value={option}
+                          checked={quizAnswers[quiz.id] === option}
+                          onChange={() => selectQuizAnswer(quiz.id, option)}
+                        />
+                        <span>{option}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {quizResult !== null ? (
+                    <div className={isCorrect ? "quiz-correct" : "quiz-wrong"}>
+                      <p>{isCorrect ? "정답입니다." : "다시 복습해보세요."} {quiz.explanation}</p>
+                      {!isCorrect ? (
+                        <button type="button" onClick={() => reviewTerm(quiz.termId)}>
+                          관련 용어 다시 보기
+                        </button>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </fieldset>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="quiz-loading" role="status">문제를 준비하고 있습니다.</p>
+        )}
+
+        <div className="quiz-actions">
+          <button
+            className="btn"
+            type="button"
+            disabled={!allQuizQuestionsAnswered || quizResult !== null}
+            onClick={checkQuiz}
+          >
+            {quizResult !== null ? "채점 완료" : "정답 확인"}
+          </button>
+          {quizResult !== null || isComplete ? (
+            <button className="btn alt" type="button" onClick={startNewQuiz}>
+              다른 7문제 풀기
+            </button>
+          ) : null}
         </div>
 
-        <button
-          className="btn"
-          type="button"
-          disabled={isComplete || !allQuizQuestionsAnswered}
-          onClick={checkQuiz}
-        >
-          {isComplete ? "✓ AI 용어 학습 완료" : "정답 확인"}
-        </button>
-
-        {!allQuizQuestionsAnswered && !isComplete ? (
-          <p className="quiz-help">세 문제에 모두 답하면 정답을 확인할 수 있습니다.</p>
+        {!allQuizQuestionsAnswered && quizResult === null ? (
+          <p className="quiz-help">일곱 문제에 모두 답하면 정답을 확인할 수 있습니다.</p>
         ) : null}
-        {quizResult !== null && quizResult < quizQuestions.length ? (
+        {quizResult !== null && quizResult < PASS_SCORE ? (
           <p className="quiz-result" role="status">
-            {quizQuestions.length}개 중 {quizResult}개를 맞혔습니다. 답을 바꾼 뒤 다시 확인해보세요.
+            7개 중 {quizResult}개를 맞혔습니다. 틀린 용어를 복습한 뒤 다시 도전해보세요.
           </p>
         ) : null}
-        {isComplete ? (
-          <p className="quiz-result success" role="status">모두 맞혔습니다. 다음 학습으로 이동해보세요!</p>
+        {quizResult !== null && quizResult >= PASS_SCORE ? (
+          <p className="quiz-result success" role="status">
+            7개 중 {quizResult}개를 맞혔습니다. AI 용어 학습을 완료했습니다!
+          </p>
+        ) : null}
+        {isComplete && quizResult === null ? (
+          <p className="quiz-result success">완료한 학습입니다. 새로운 7문제로 복습할 수 있습니다.</p>
         ) : null}
       </section>
 
